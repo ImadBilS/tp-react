@@ -7,7 +7,7 @@ import Wishlist from "./pages/Wishlist";
 function App() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
-      <Navbar /> {/* La Navbar est visible sur toutes les pages */}
+      <Navbar />
       <main className="p-4">
         <Routes>
           <Route path="/" element={<MovieList />} />

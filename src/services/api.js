@@ -21,9 +21,7 @@ const fetchFromTMDB = async (endpoint, params = {}) => {
   }
 };
 
-// --- Méthodes demandées par le TP ---
-
-// 1. Lister les films (Populaires, Now Playing, Top Rated, Upcoming)
+// 1. Lister les films
 export const getMovies = (category = "popular", page = 1) => {
   // endpoint attendu : /movie/popular, /movie/top_rated, etc.
   return fetchFromTMDB(`/movie/${category}`, { page });
