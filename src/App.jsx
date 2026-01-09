@@ -1,24 +1,20 @@
-import { useEffect } from "react";
-import { getMovies } from "./services/api"; // Assure-toi que le chemin est bon
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import MovieList from "./pages/MovieList";
+import MovieDetail from "./pages/MovieDetail";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
-  useEffect(() => {
-    // On lance un appel test vers les films populaires
-    console.log("Tentative de connexion à l'API...");
-
-    getMovies("popular")
-      .then((data) => {
-        console.log("✅ Succès ! Données reçues :", data);
-      })
-      .catch((error) => {
-        console.error("❌ Erreur :", error);
-      });
-  }, []);
-
   return (
-    <div className="p-10 text-center">
-      <h1 className="text-2xl font-bold">Test API en cours...</h1>
-      <p>Ouvre la console du navigateur (F12) pour voir le résultat.</p>
+    <div className="min-h-screen bg-gray-100 text-gray-800">
+      <Navbar /> {/* La Navbar est visible sur toutes les pages */}
+      <main className="p-4">
+        <Routes>
+          <Route path="/" element={<MovieList />} />
+          <Route path="/movie/:id" element={<MovieDetail />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+        </Routes>
+      </main>
     </div>
   );
 }
