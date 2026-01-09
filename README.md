@@ -1,16 +1,56 @@
-# React + Vite
+# 🎬 React Movie App — TP Noté
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web moderne de gestion et de recherche de films, développée avec **React**, **Vite** et **Tailwind CSS**.  
+Les données sont récupérées en temps réel via l’API **TMDb (The Movie Database)**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Fonctionnalités
 
-## React Compiler
+### 🧭 Navigation & Consultation
+- **Page d’accueil dynamique** : affichage des films selon 4 catégories :
+  - Populaires
+  - En salle
+  - Mieux notés
+  - À venir
+- **Recherche de films** par titre.
+- **Pagination** pour naviguer entre les pages de résultats.
+- **Page détail d’un film** avec :
+  - Synopsis
+  - Note moyenne
+  - Date de sortie
+  - Durée
+  - Genres
+  - Affiche et image de fond
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 👥 Casting & Recommandations
+- **Casting principal** : affichage des 10 acteurs principaux avec photo et rôle.
+- **Films similaires** : suggestions automatiques basées sur le film consulté.
 
-## Expanding the ESLint configuration
+### ❤️ Gestion de la Wishlist
+- **Ajout / Retrait de films** à la wishlist.
+- **Persistance via localStorage** (la wishlist est conservée après rechargement).
+- **Compteur en temps réel** dans la barre de navigation.
+- **Page Wishlist dédiée** avec :
+  - Liste des films favoris
+  - Recherche et filtrage
+  - Suppression individuelle
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Stack Technique
+
+- **Framework** : React (Vite)
+- **Routage** : React Router DOM v6
+- **Styles** : Tailwind CSS v4
+- **Gestion d’état global** : Context API + hooks personnalisés
+- **API externe** : The Movie Database (TMDb)
+
+---
+
+## 🚀 Installation et Lancement
+
+### 1️⃣ Cloner le projet
+```bash
+git clone <URL_DU_REPO_GITHUB>
+cd react-movie-app
