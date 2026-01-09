@@ -1,27 +1,39 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getMovieDetails, getMovieCredits } from "../services/api";
-import { useWishlist } from "../context/WishListContext";
+import {
+  getMovieDetails,
+  getMovieCredits,
+  getSimilarMovies,
+} from "../services/api";
+import { useWishlist } from "../context/WishlistContext";
+import MovieCard from "../components/MovieCard";
 
 const MovieDetail = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
+  const [similarMovies, setSimilarMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const [movieData, creditsData] = await Promise.all([
+        const [movieData, creditsData, similarData] = await Promise.all([
           getMovieDetails(id),
           getMovieCredits(id),
+          getSimilarMovies(id),
         ]);
 
         setMovie(movieData);
         setCast(creditsData.cast.slice(0, 10));
+        setSimilarMovies(similarData.results.slice(0, 6));
       } catch {
         setError("Impossible de charger les détails du film.");
       } finally {
@@ -44,6 +56,8 @@ const MovieDetail = () => {
 
   if (!movie) return <div className="text-center mt-10">Film introuvable</div>;
 
+  const isFavorite = isInWishlist(movie.id);
+
   const backdropUrl = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
     : null;
@@ -52,11 +66,8 @@ const MovieDetail = () => {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/300x450?text=No+Image";
 
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const isFavorite = movie ? isInWishlist(movie.id) : false;
-
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen pb-10">
       <div
         className="relative w-full h-[400px] bg-cover bg-center text-white"
         style={{
@@ -71,11 +82,9 @@ const MovieDetail = () => {
               alt={movie.title}
               className="w-48 rounded-lg shadow-2xl border-4 border-white hidden md:block"
             />
-
             <div className="text-center md:text-left max-w-2xl">
               <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
               <p className="italic text-gray-300 mb-4">{movie.tagline}</p>
-
               <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-4">
                 <span className="bg-yellow-500 text-black font-bold px-3 py-1 rounded">
                   ⭐ {movie.vote_average.toFixed(1)}/10
@@ -87,7 +96,6 @@ const MovieDetail = () => {
                   ⏱️ {movie.runtime} min
                 </span>
               </div>
-
               <div className="flex gap-2 justify-center md:justify-start flex-wrap">
                 {movie.genres?.map((g) => (
                   <span
@@ -108,7 +116,7 @@ const MovieDetail = () => {
           <section>
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">Synopsis</h2>
             <p className="text-gray-700 leading-relaxed text-lg">
-              {movie.overview || "Aucun résumé disponible pour ce film."}
+              {movie.overview || "Aucun résumé disponible."}
             </p>
           </section>
 
@@ -116,7 +124,7 @@ const MovieDetail = () => {
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">
               Têtes d'affiche
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {cast.map((actor) => (
                 <div
                   key={actor.id}
@@ -142,16 +150,22 @@ const MovieDetail = () => {
             </div>
           </section>
 
-          <Link
-            to="/"
-            className="inline-block mt-8 text-blue-600 hover:underline"
-          >
-            ← Retour à la liste
-          </Link>
+          {similarMovies.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold mb-4 border-b pb-2 mt-8">
+                Vous aimerez peut-être...
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {similarMovies.map((m) => (
+                  <MovieCard key={m.id} movie={m} />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
         <div className="md:col-span-1">
-          <div className="bg-gray-50 p-4 rounded-lg shadow border">
+          <div className="bg-gray-50 p-4 rounded-lg shadow border sticky top-24">
             <h3 className="font-bold text-lg mb-4">Actions</h3>
             <button
               onClick={() =>
@@ -159,14 +173,19 @@ const MovieDetail = () => {
               }
               className={`w-full py-2 rounded font-bold transition-colors mb-2 ${
                 isFavorite
-                  ? "bg-red-100 text-red-600 border border-red-200 hover:bg-red-200"
+                  ? "bg-red-100 text-red-600 border border-red-200"
                   : "bg-blue-600 text-white hover:bg-blue-700"
               }`}
             >
-              {isFavorite
-                ? "💔 Retirer de la Wishlist"
-                : "❤️ Ajouter à la Wishlist"}
+              {isFavorite ? "💔 Retirer" : "❤️ Ajouter à la Wishlist"}
             </button>
+
+            <Link
+              to="/"
+              className="block text-center mt-4 text-gray-500 hover:text-black text-sm"
+            >
+              ← Retour à l'accueil
+            </Link>
           </div>
         </div>
       </div>
