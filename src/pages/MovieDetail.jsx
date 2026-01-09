@@ -5,7 +5,7 @@ import {
   getMovieCredits,
   getSimilarMovies,
 } from "../services/api";
-import { useWishlist } from "../context/WishlistContext";
+import { useWishlist } from "../context/WishListContext";
 import MovieCard from "../components/MovieCard";
 
 const MovieDetail = () => {

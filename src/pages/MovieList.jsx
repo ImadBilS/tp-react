@@ -8,18 +8,20 @@ const MovieList = () => {
   const [error, setError] = useState(null);
   const [category, setCategory] = useState("popular");
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
 
   const fetchMovies = async () => {
     setLoading(true);
     setError(null);
-
     try {
-      const data = searchTerm.trim()
-        ? await searchMovies(searchTerm)
-        : await getMovies(category);
-
+      let data;
+      if (searchTerm.trim()) {
+        data = await searchMovies(searchTerm, page);
+      } else {
+        data = await getMovies(category, page);
+      }
       setMovies(data.results);
-    } catch {
+    } catch (err) {
       setError("Impossible de charger les films.");
     } finally {
       setLoading(false);
@@ -27,14 +29,22 @@ const MovieList = () => {
   };
 
   useEffect(() => {
-    if (!searchTerm) {
-      fetchMovies();
-    }
-  }, [category]);
+    fetchMovies();
+    window.scrollTo(0, 0);
+  }, [category, page]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    setPage(1);
     fetchMovies();
+  };
+
+  const handleCategoryChange = (newCategory) => {
+    if (category !== newCategory) {
+      setCategory(newCategory);
+      setPage(1);
+      setSearchTerm("");
+    }
   };
 
   const categories = [
@@ -70,7 +80,7 @@ const MovieList = () => {
           {categories.map((cat) => (
             <button
               key={cat.key}
-              onClick={() => setCategory(cat.key)}
+              onClick={() => handleCategoryChange(cat.key)}
               className={`px-6 py-2 rounded-full font-semibold transition-all duration-200 ${
                 category === cat.key
                   ? "bg-blue-600 text-white shadow-lg scale-105"
@@ -88,11 +98,12 @@ const MovieList = () => {
           <button
             onClick={() => {
               setSearchTerm("");
-              window.location.reload();
+              setPage(1);
+              setCategory("popular");
             }}
             className="text-blue-600 underline hover:text-blue-800"
           >
-            Effacer la recherche et revenir aux films
+            ❌ Effacer la recherche
           </button>
         </div>
       )}
@@ -105,11 +116,36 @@ const MovieList = () => {
       {error && <div className="text-center text-red-500 mt-10">{error}</div>}
 
       {!loading && !error && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {movies.map((movie) => (
+              <MovieCard key={movie.id} movie={movie} />
+            ))}
+          </div>
+
+          <div className="flex justify-center items-center gap-4 mt-10 mb-6">
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+              className={`px-4 py-2 rounded bg-gray-800 text-white ${
+                page === 1
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-700"
+              }`}
+            >
+              ← Précédent
+            </button>
+
+            <span className="font-bold text-lg">Page {page}</span>
+
+            <button
+              onClick={() => setPage((prev) => prev + 1)}
+              className="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700"
+            >
+              Suivant →
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
