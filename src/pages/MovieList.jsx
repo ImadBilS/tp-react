@@ -38,10 +38,10 @@ const MovieList = () => {
   };
 
   const categories = [
-    { key: "popular", label: "Populaires 🔥" },
-    { key: "now_playing", label: "En Salle 🍿" },
-    { key: "top_rated", label: "Mieux Notés ⭐" },
-    { key: "upcoming", label: "À Venir 📅" },
+    { key: "popular", label: "Populaires" },
+    { key: "now_playing", label: "En Salle" },
+    { key: "top_rated", label: "Mieux Notés" },
+    { key: "upcoming", label: "À Venir" },
   ];
 
   return (
@@ -61,7 +61,7 @@ const MovieList = () => {
           type="submit"
           className="bg-blue-600 text-white px-6 py-2 rounded-r-lg hover:bg-blue-700 font-bold"
         >
-          🔍
+          Rechercher
         </button>
       </form>
 
