@@ -4,7 +4,6 @@ const Navbar = () => {
   return (
     <nav className="bg-slate-800 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        {/* Logo qui redirige vers l'accueil */}
         <Link to="/" className="text-xl font-bold text-blue-400">
           ReactMovies
         </Link>
