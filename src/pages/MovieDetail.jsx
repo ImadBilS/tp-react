@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getMovieDetails, getMovieCredits } from "../services/api";
+import { useWishlist } from "../context/WishListContext";
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -50,6 +51,9 @@ const MovieDetail = () => {
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/300x450?text=No+Image";
+
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const isFavorite = movie ? isInWishlist(movie.id) : false;
 
   return (
     <div className="bg-white min-h-screen">
@@ -150,10 +154,18 @@ const MovieDetail = () => {
           <div className="bg-gray-50 p-4 rounded-lg shadow border">
             <h3 className="font-bold text-lg mb-4">Actions</h3>
             <button
-              className="w-full bg-gray-300 text-gray-500 py-2 rounded cursor-not-allowed mb-2"
-              disabled
+              onClick={() =>
+                isFavorite ? removeFromWishlist(movie.id) : addToWishlist(movie)
+              }
+              className={`w-full py-2 rounded font-bold transition-colors mb-2 ${
+                isFavorite
+                  ? "bg-red-100 text-red-600 border border-red-200 hover:bg-red-200"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
             >
-              ❤️ Ajouter à la Wishlist (Bientôt)
+              {isFavorite
+                ? "💔 Retirer de la Wishlist"
+                : "❤️ Ajouter à la Wishlist"}
             </button>
           </div>
         </div>
